@@ -1,0 +1,18 @@
+spring.application.name=weout
+
+server: 
+  error: 
+    inckude-message: always
+    include-binding-errors: always r
+
+spring:
+  datasource:
+    url: jdbc:postgreql://localhost:5432/registration 
+    username: 
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties: 
+      hibernate: 
