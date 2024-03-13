@@ -1,60 +1,104 @@
 package com.weout.appuser;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+ 
+
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Entity
 public class AppUser implements UserDetails {
 
+    @Id
+    @SequenceGenerator (
+        name = "student_sequence",
+        sequenceName = "student_sequence",
+        allocationSize = 1
+    )
+    @GeneratedValue(
+        strategy = GenerationType.SEQUENCE,
+        generator = "student_sequence"
+    )
     private Long id; 
+    public AppUser(String name,
+                   String username,
+                   String email, 
+                   String password, 
+                   AppUserRole appUserRole, 
+                   Boolean locked,
+                   Boolean enabled) {
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.appUserRole = appUserRole;
+        this.locked = locked;
+        this.enabled = enabled;
+    }
+
     private String name; 
     private String username; 
     private String email; 
     private String password; 
+    @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole; 
+    private Boolean locked; 
+    private Boolean enabled; 
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        return null;
+        SimpleGrantedAuthority authority = 
+            new SimpleGrantedAuthority(appUserRole.name());
+        return Collections.singletonList(authority);
     }
 
     @Override
-    public String getPassword() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getPassword() {   
+        return password;
     }
 
     @Override
     public String getUsername() {
-        // TODO Auto-generated method stub
-        return null;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
-        return false;
+        return !locked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
-    public boolean isEnabled() {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean isEnabled() { 
+        return enabled;
     }
     
     
